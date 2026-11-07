@@ -25,5 +25,13 @@ module.exports = defineConfig({
       dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
     },
+
+    // PIM tests also start logged in as the admin.
+    {
+      name: 'pim',
+      testMatch: /pim-.*\.spec\.js/,
+      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
+    },
   ],
 });

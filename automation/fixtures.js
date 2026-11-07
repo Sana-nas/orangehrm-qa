@@ -27,16 +27,37 @@ const test = base.test.extend({
         return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
       },
 
-      async createEmployee() {
+      // 8 digits, so it fits the 10-character Employee Id limit and stays unique between runs.
+      uniqueEmployeeId() {
+        return String(Date.now()).slice(-6) + String(Math.floor(Math.random() * 90) + 10);
+      },
+
+      async createEmployee({ employeeId = '' } = {}) {
         const lastName = this.uniqueName('Auto');
         const employee = await send(
           await request.post(`${API}pim/employees`, {
-            data: { firstName: 'QA', middleName: '', lastName, empPicture: null, employeeId: '' },
+            data: { firstName: 'QA', middleName: '', lastName, empPicture: null, employeeId },
           }),
           'Create employee'
         );
         employeeIds.push(employee.empNumber);
-        return { empNumber: employee.empNumber, firstName: 'QA', lastName };
+        return { empNumber: employee.empNumber, firstName: 'QA', lastName, employeeId };
+      },
+
+      // For employees a test creates through the screen: remember the number so cleanup can remove it.
+      trackEmployee(empNumber) {
+        employeeIds.push(empNumber);
+      },
+
+      // Makes `supervisor` the direct supervisor of `subordinate` (a reporting line). The API calls
+      // the supervisor's number "empNumber". Removing either employee later removes the line.
+      async setSupervisor(subordinate, supervisor) {
+        await send(
+          await request.post(`${API}pim/employees/${subordinate.empNumber}/supervisors`, {
+            data: { empNumber: supervisor.empNumber, reportingMethodId: 1 }, // 1 = Direct, 2 = Indirect
+          }),
+          'Set supervisor'
+        );
       },
 
       async createUser({ empNumber, role = 'ESS', enabled = true, username = this.uniqueName('qa') }) {
