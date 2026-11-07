@@ -99,7 +99,8 @@ test.describe('Admin - user management', () => {
 
     await usersPage.open();
     await usersPage.searchByUsername(data.uniqueName('nomatch'));
-    await expect(usersPage.rows).toHaveCount(0);
+    // Wait for the "no records" message first: a row count of 0 alone can also be true while the table is still loading.
+    await expect(usersPage.recordsInfo).toHaveText('No Records Found');
 
     await usersPage.resetButton.click();
 

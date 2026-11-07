@@ -14,6 +14,7 @@ copy .env.example .env     # then fill in the values
 npx playwright test                      # everything
 npx playwright test --project=chromium    # Login tests only
 npx playwright test --project=admin       # Admin tests only (they create and remove their own data)
+npx playwright test --project=pim         # PIM tests only (same)
 npx playwright show-report
 ```
 
@@ -24,5 +25,6 @@ npx playwright show-report
 - `automation/tests/` - test specs; each title starts with its test case ID
 
 Manual results are in the Result column. Automation status and the source of each expected result are in the Comments column.
+
 
 

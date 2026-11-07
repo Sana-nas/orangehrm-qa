@@ -20,8 +20,10 @@ class EmployeeListPage {
   }
 
   columnHeader(name) {
-    // exact: 'Id' would otherwise also match "First (& Middle) Name"
-    return this.page.getByRole('columnheader', { name, exact: true });
+    // The header names carry a trailing icon character (the sort arrows), and plain 'Id' would also match
+    // "First (& Middle) Name". So the name must start the header and no letter may follow it.
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.page.getByRole('columnheader', { name: new RegExp(`^${escaped}(?![A-Za-z])`) });
   }
 
   async open() {

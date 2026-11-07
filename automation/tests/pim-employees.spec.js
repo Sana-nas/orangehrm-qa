@@ -62,7 +62,7 @@ test.describe('PIM - employees', () => {
 
   test('TC-PIM-006 search for an Employee Id that does not exist', async ({ data }) => {
     await list.open();
-    await list.searchById(data.uniqueName('zz'));
+    await list.searchById('zz' + data.uniqueEmployeeId()); // 10 characters, the longest an Employee Id can be
 
     await expect(list.recordsInfo).toHaveText('No Records Found');
     await expect(list.rows).toHaveCount(0);
@@ -72,8 +72,9 @@ test.describe('PIM - employees', () => {
     const employee = await data.createEmployee();
 
     await list.open();
-    await list.searchById(data.uniqueName('zz'));
-    await expect(list.rows).toHaveCount(0);
+    await list.searchById('zz' + data.uniqueEmployeeId());
+    // Wait for the "no records" message first: a row count of 0 alone can also be true while the table is still loading.
+    await expect(list.recordsInfo).toHaveText('No Records Found');
 
     await list.resetButton.click();
 
@@ -88,9 +89,11 @@ test.describe('PIM - employees', () => {
 
     await addPage.open();
     await addPage.fillNames({ last: lastName });
-    data.trackEmployee(await addPage.saveAndGetEmpNumber());
+    await addPage.saveButton.click();
 
+    // The message shows for a few seconds while the app is still moving on, so check it before waiting for the next page.
     await expect(page.getByText('Successfully Saved')).toBeVisible();
+    data.trackEmployee(await addPage.empNumberFromUrl());
     await expect(page).toHaveURL(PERSONAL_URL);
     await list.open();
     await expect(list.row(lastName)).toBeVisible();
@@ -219,7 +222,7 @@ test.describe('PIM - employees', () => {
     await addPage.createLoginSwitch.click();
     await addPage.username.fill(existingUser.username);
 
-    await expect(addPage.error('Username')).toHaveText('Already exists');
+    await expect(addPage.error('Username')).toHaveText('Username already exists');
   });
 
   test('TC-PIM-021 login details with a weak password are rejected', async ({ data }) => {

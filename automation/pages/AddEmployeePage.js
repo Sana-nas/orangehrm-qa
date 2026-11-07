@@ -34,10 +34,14 @@ class AddEmployeePage {
   }
 
   // After a successful save the app opens the new employee's Personal Details, with the number in the URL.
-  async saveAndGetEmpNumber() {
-    await this.saveButton.click();
+  async empNumberFromUrl() {
     await this.page.waitForURL(/\/pim\/viewPersonalDetails\/empNumber\/\d+/);
     return Number(this.page.url().match(/empNumber\/(\d+)/)[1]);
+  }
+
+  async saveAndGetEmpNumber() {
+    await this.saveButton.click();
+    return this.empNumberFromUrl();
   }
 }
 
