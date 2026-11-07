@@ -17,8 +17,9 @@ npx playwright show-report
 
 ## Project layout
 
-- `manual-testing/` - test scenarios and test cases per module (CSV, opens in Excel)
+- `manual-testing/OrangeHRM-TestCases.xlsx` - test scenarios, plus one sheet of test cases and results per module
 - `automation/pages/` - page objects: one file per screen, holding selectors and actions
 - `automation/tests/` - test specs; each title starts with its test case ID
 
-Manual and automated status are tracked separately in the test case files.
+Manual results are in the Result column. Automation status and the source of each expected result are in the Comments column.
+
