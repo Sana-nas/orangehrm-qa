@@ -1,0 +1,9 @@
+Scenario ID,Title,Area,Why it matters
+TS-LOGIN-001,Valid user can log in,Authentication,Core entry point; nothing else works without it
+TS-LOGIN-002,Invalid credentials are rejected,Authentication (negative),Wrong or unknown credentials must never grant access
+TS-LOGIN-003,Login form validates empty input,Validation,Users get clear feedback before a request is sent
+TS-LOGIN-004,Credential matching rules,Authentication (boundary),Documents what counts as a matching username and password
+TS-LOGIN-005,Logout ends the session,Session handling,Protects data on shared computers
+TS-LOGIN-006,Protected pages require a login,Session handling / access control,Unauthenticated users must not reach HR data
+TS-LOGIN-007,Forgot password link is reachable,Navigation,Users who lose their password need a way to start recovery
+TS-LOGIN-008,Disabled user cannot log in,Authentication (role/status),Deactivated staff must lose access
