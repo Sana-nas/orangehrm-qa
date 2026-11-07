@@ -7,6 +7,8 @@ class LoginPage {
     this.loginButton = page.getByRole('button', { name: 'Login' });
     this.invalidCredentialsAlert = page.getByText('Invalid credentials');
     this.forgotPasswordLink = page.getByText('Forgot your password?');
+    // Any login error message ('Invalid credentials', 'Account disabled', ...). The alert has no role, so CSS.
+    this.alertMessage = page.locator('.oxd-alert-content-text');
 
     // "Required" appears once per field, so each message is scoped to its own field group.
     // The UI has no accessible link between a field and its error, hence the CSS class.

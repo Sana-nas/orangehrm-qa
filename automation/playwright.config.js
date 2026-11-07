@@ -11,5 +11,19 @@ module.exports = defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    // Logs in once and saves the session for the projects that need an admin.
+    { name: 'setup', testMatch: /auth\.setup\.js/ },
+
+    // Login tests must start logged out, so they use no saved session.
+    { name: 'chromium', testMatch: /login\.spec\.js/, use: { ...devices['Desktop Chrome'] } },
+
+    // Admin tests start logged in as the admin, using the session saved by "setup".
+    {
+      name: 'admin',
+      testMatch: /admin-.*\.spec\.js/,
+      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
+    },
+  ],
 });
