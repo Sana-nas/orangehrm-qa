@@ -1,4 +1,4 @@
-// Page object for Leave > Assign Leave (an admin gives leave to an employee; it needs no approval).
+﻿// Page object for Leave > Assign Leave (an admin gives leave to an employee; it needs no approval).
 class AssignLeavePage {
   constructor(page) {
     this.page = page;
@@ -15,6 +15,8 @@ class AssignLeavePage {
   async open() {
     await this.page.goto('leave/assignLeave');
     await this.field('Employee Name').waitFor();
+    // Wait until the page has finished loading its data. Acting earlier can be ignored or overwritten when the server is busy.
+    await this.page.waitForLoadState('networkidle');
   }
 
   async assign({ lastName, type = 'QA Annual Leave', from, to }) {

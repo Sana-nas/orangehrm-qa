@@ -1,4 +1,4 @@
-// Page object for Leave > Apply (the form an employee uses to ask for leave).
+﻿// Page object for Leave > Apply (the form an employee uses to ask for leave).
 class ApplyLeavePage {
   constructor(page) {
     this.page = page;
@@ -17,6 +17,8 @@ class ApplyLeavePage {
   async open() {
     await this.page.goto('leave/applyLeave');
     await this.field('Leave Type').waitFor();
+    // Wait until the page has finished loading its data. Acting earlier can be ignored or overwritten when the server is busy.
+    await this.page.waitForLoadState('networkidle');
   }
 
   async chooseType(name) {

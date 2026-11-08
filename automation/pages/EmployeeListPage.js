@@ -1,4 +1,4 @@
-// Page object for PIM > Employee List (search filters, results table, delete).
+﻿// Page object for PIM > Employee List (search filters, results table, delete).
 class EmployeeListPage {
   constructor(page) {
     this.page = page;
@@ -29,6 +29,8 @@ class EmployeeListPage {
   async open() {
     await this.page.goto('pim/viewEmployeeList');
     await this.heading.waitFor();
+    // Wait until the page has finished loading its data. Acting earlier can be ignored or overwritten when the server is busy.
+    await this.page.waitForLoadState('networkidle');
   }
 
   // Finds a row by its exact Last Name cell. The tests give every employee a unique last name,

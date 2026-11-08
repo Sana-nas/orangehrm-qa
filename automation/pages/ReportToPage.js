@@ -1,4 +1,4 @@
-// Page object for an employee's Report-to tab: who supervises them and who reports to them.
+﻿// Page object for an employee's Report-to tab: who supervises them and who reports to them.
 class ReportToPage {
   constructor(page) {
     this.page = page;
@@ -17,6 +17,8 @@ class ReportToPage {
   async open(empNumber) {
     await this.page.goto(`pim/viewReportToDetails/empNumber/${empNumber}`);
     await this.supervisorsHeading.waitFor();
+    // Wait until the page has finished loading its data. Acting earlier can be ignored or overwritten when the server is busy.
+    await this.page.waitForLoadState('networkidle');
   }
 
   // A row in either list (supervisors or subordinates), found by the person's unique last name.

@@ -4,6 +4,9 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
+  // The local OrangeHRM (Apache and PHP on a laptop) slows down when many browsers use it at once, and the
+  // busiest tests then time out. Three at a time keeps the whole suite reliable; more is faster but flaky.
+  workers: 3,
   reporter: [['html', { open: 'never' }]],
   use: {
     // Trailing slash matters: it lets page.goto('auth/login') resolve under this URL.
@@ -30,6 +33,14 @@ module.exports = defineConfig({
     {
       name: 'leave',
       testMatch: /leave-.*\.spec\.js/,
+      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
+    },
+
+    // The end-to-end story starts as the admin, then signs in as the people in it.
+    {
+      name: 'end-to-end',
+      testMatch: /end-to-end\.spec\.js/,
       dependencies: ['setup'],
       use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
     },

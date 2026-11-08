@@ -1,4 +1,4 @@
-// Page object for Leave > Entitlements > Add Entitlements.
+﻿// Page object for Leave > Entitlements > Add Entitlements.
 class AddEntitlementPage {
   constructor(page) {
     this.page = page;
@@ -21,6 +21,8 @@ class AddEntitlementPage {
   async open() {
     await this.page.goto('leave/addLeaveEntitlement');
     await this.page.getByText('Individual Employee').waitFor();
+    // Wait until the page has finished loading its data. Acting earlier can be ignored or overwritten when the server is busy.
+    await this.page.waitForLoadState('networkidle');
   }
 
   async choose(label, option) {

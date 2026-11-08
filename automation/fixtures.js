@@ -22,6 +22,7 @@ const test = base.test.extend({
     const employeeIds = [];
     const userIds = [];
     const usernamesCreatedInUi = [];
+    const employeeLastNames = [];
     const leaveTypeNames = [];
     const holidayDates = [];
 
@@ -50,6 +51,12 @@ const test = base.test.extend({
       // For employees a test creates through the screen: remember the number so cleanup can remove it.
       trackEmployee(empNumber) {
         employeeIds.push(empNumber);
+      },
+
+      // Same, but by the unique last name. Register this BEFORE saving, so the employee is still removed
+      // when the test fails half-way and never learns its number.
+      trackEmployeeByLastName(lastName) {
+        employeeLastNames.push(lastName);
       },
 
       // Makes `supervisor` the direct supervisor of `subordinate` (a reporting line). The API calls
@@ -135,8 +142,20 @@ const test = base.test.extend({
 
     await use(data);
 
-    // Cleanup. Users are removed by exact username or id, never by position in a list,
+    // Cleanup. First let any save that is still in flight finish: when the server is slow a test can give up
+    // while its request is still being processed, and the new record would appear after the cleanup had looked.
+    await page.waitForLoadState('networkidle').catch(() => {});
+
+    // Everything is removed by exact username, name or id, never by position in a list,
     // because the database is shared with manual testing.
+    for (const lastName of employeeLastNames) {
+      const found = await request.get(`${API}pim/employees?nameOrId=${encodeURIComponent(lastName)}&limit=50&offset=0`);
+      if (found.ok()) {
+        for (const employee of (await found.json()).data) {
+          if (employee.lastName === lastName) employeeIds.push(employee.empNumber);
+        }
+      }
+    }
     for (const username of usernamesCreatedInUi) {
       const found = await request.get(`${API}admin/users?limit=50&offset=0&username=${encodeURIComponent(username)}`);
       if (found.ok()) {
@@ -162,7 +181,8 @@ const test = base.test.extend({
     // Teardown must not hide a test result, so failures here are ignored (e.g. already deleted by the test).
     if (userIds.length) await request.delete(`${API}admin/users`, { data: { ids: userIds } });
     // Deleting an employee also removes their entitlements and leave requests.
-    if (employeeIds.length) await request.delete(`${API}pim/employees`, { data: { ids: employeeIds } });
+    const uniqueEmployeeIds = [...new Set(employeeIds)];
+    if (uniqueEmployeeIds.length) await request.delete(`${API}pim/employees`, { data: { ids: uniqueEmployeeIds } });
   },
 
   // A browser page with nobody logged in, for tests that log in as a different user.

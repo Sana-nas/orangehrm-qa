@@ -1,4 +1,4 @@
-const { test, expect, VALID_PASSWORD } = require('../fixtures');
+﻿const { test, expect, VALID_PASSWORD } = require('../fixtures');
 const { EmployeeListPage } = require('../pages/EmployeeListPage');
 const { AddEmployeePage } = require('../pages/AddEmployeePage');
 const { PersonalDetailsPage } = require('../pages/PersonalDetailsPage');
@@ -86,9 +86,11 @@ test.describe('PIM - employees', () => {
 
   test('TC-PIM-008 add an employee with the mandatory fields only', async ({ page, data }) => {
     const lastName = data.uniqueName('Auto');
+    data.trackEmployeeByLastName(lastName); // before saving, so a half-finished run is still cleaned up
 
     await addPage.open();
     await addPage.fillNames({ last: lastName });
+    await addPage.employeeId.fill(data.uniqueEmployeeId()); // the suggested Id can be taken by a test running at the same time
     await addPage.saveButton.click();
 
     // The message shows for a few seconds while the app is still moving on, so check it before waiting for the next page.
@@ -102,6 +104,7 @@ test.describe('PIM - employees', () => {
   test('TC-PIM-009 add an employee with all name fields and a chosen Employee Id', async ({ data }) => {
     const lastName = data.uniqueName('Auto');
     const employeeId = data.uniqueEmployeeId();
+    data.trackEmployeeByLastName(lastName);
 
     await addPage.open();
     await addPage.fillNames({ middle: 'Mid', last: lastName });
@@ -118,9 +121,11 @@ test.describe('PIM - employees', () => {
     const lastName = data.uniqueName('Auto');
     const username = data.uniqueName('qa');
     data.trackUser(username);
+    data.trackEmployeeByLastName(lastName);
 
     await addPage.open();
     await addPage.fillNames({ last: lastName });
+    await addPage.employeeId.fill(data.uniqueEmployeeId());
     await addPage.createLoginSwitch.click();
     await addPage.username.fill(username);
     await addPage.password.fill(VALID_PASSWORD);
@@ -451,3 +456,4 @@ test.describe('PIM - employees', () => {
     await expect(list.row(employee.lastName)).toBeHidden();
   });
 });
+

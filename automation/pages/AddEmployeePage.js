@@ -1,4 +1,4 @@
-// Page object for PIM > Add Employee, including the optional "Create Login Details" section.
+﻿// Page object for PIM > Add Employee, including the optional "Create Login Details" section.
 class AddEmployeePage {
   constructor(page) {
     this.page = page;
@@ -25,6 +25,8 @@ class AddEmployeePage {
   async open() {
     await this.page.goto('pim/addEmployee');
     await this.heading.waitFor();
+    // Wait until the page has finished loading its data. Acting earlier can be ignored or overwritten when the server is busy.
+    await this.page.waitForLoadState('networkidle');
   }
 
   async fillNames({ first = 'QA', middle = '', last }) {

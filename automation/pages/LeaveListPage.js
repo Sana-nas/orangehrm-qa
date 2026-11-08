@@ -1,4 +1,4 @@
-// Page object for Leave > Leave List, which admins and supervisors use to see and decide leave requests.
+﻿// Page object for Leave > Leave List, which admins and supervisors use to see and decide leave requests.
 class LeaveListPage {
   constructor(page) {
     this.page = page;
@@ -15,6 +15,8 @@ class LeaveListPage {
   async open() {
     await this.page.goto('leave/viewLeaveList');
     await this.recordsInfo.waitFor();
+    // Wait until the page has finished loading its data. Acting earlier can be ignored or overwritten when the server is busy.
+    await this.page.waitForLoadState('networkidle');
   }
 
   // Narrows the list to one person, so the test finds its own requests even if other requests exist.
