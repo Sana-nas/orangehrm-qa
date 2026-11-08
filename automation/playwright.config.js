@@ -26,6 +26,14 @@ module.exports = defineConfig({
       use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
     },
 
+    // Leave tests start logged in as the admin too. Tests that need an employee or a supervisor sign in as them.
+    {
+      name: 'leave',
+      testMatch: /leave-.*\.spec\.js/,
+      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
+    },
+
     // PIM tests also start logged in as the admin.
     {
       name: 'pim',
