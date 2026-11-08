@@ -4,14 +4,14 @@ Manual and automated testing of **OrangeHRM Starter 5.9**, covering Login, Admin
 
 ## Results at a glance
 
-| Module | Test cases | Pass | Fail | Observation | Automated |
+| Module | Test cases | Pass | Fail | Observation | Cases automated |
 |---|---|---|---|---|---|
 | Login | 17 | 16 | 0 | 1 | 15 |
 | Admin: user management | 34 | 32 | 0 | 2 | 32 |
 | PIM | 39 | 35 | 1 | 3 | 36 |
 | Leave | 46 | 45 | 0 | 1 | 45 |
-| End-to-end workflow | 4 | 4 | 0 | 0 | 4 (one test, one step per case) |
-| **Total** | **140** | **132** | **1** | **7** | **129 tests** |
+| End-to-end workflow | 4 | 4 | 0 | 0 | 4 (as one test with one step per case) |
+| **Total** | **140** | **132** | **1** | **7** | **132 cases, in 129 tests** |
 
 - **Defect found:** BUG-001. The Personal Details page accepts and saves a Date of Birth in the future. The report is in the `Bug Reports` sheet of the workbook, with screenshots in `manual-testing/evidence/BUG-001/`. The matching automated test (TC-PIM-027) is marked as an expected failure until the bug is fixed.
 - **Observations:** a case is recorded as an observation when no documented expected result exists, so it is not judged as pass or fail. One example is whether the username search in Admin matches part of a name.
