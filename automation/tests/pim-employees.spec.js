@@ -297,12 +297,12 @@ test.describe('PIM - employees', () => {
     await expect(personal.dateOfBirthError).toHaveText('Should be a valid date in yyyy-mm-dd format');
   });
 
-  // KNOWN DEFECT CANDIDATE (BUG-001, waiting for manual confirmation). The correct behaviour is that a future
-  // birth date is rejected. The application currently saves it, so this test is expected to fail.
+  // KNOWN DEFECT (BUG-001, confirmed manually). The correct behaviour is that a future birth date is rejected.
+  // The application currently saves it, so this test is expected to fail.
   // test.fail() records that: the report shows it as an expected failure, and it starts failing the run
   // (a reminder to remove this line) as soon as the application is fixed.
   test('TC-PIM-027 a Date of Birth in the future is rejected', async ({ page, data }) => {
-    test.fail(true, 'BUG-001 candidate: the application saves a future Date of Birth');
+    test.fail(true, 'BUG-001: the application saves a future Date of Birth');
     const employee = await data.createEmployee();
 
     await personal.open(employee.empNumber);
