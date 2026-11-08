@@ -19,6 +19,8 @@ class AddHolidayPage {
   async open() {
     await this.page.goto('leave/saveHolidays');
     await this.page.getByText('Repeats Annually', { exact: true }).waitFor();
+    // The "Already exists" check only works once the form has finished loading its data. Typing earlier is ignored.
+    await this.page.waitForLoadState('networkidle');
   }
 
   // The date field only registers a value after the field is left, so it is blurred.

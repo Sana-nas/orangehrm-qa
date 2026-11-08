@@ -174,6 +174,7 @@ test.describe('Leave - requests', () => {
 
     await apply.open();
     await apply.chooseType('QA Annual Leave');
+    await expect(apply.leaveBalance).toContainText('10.00 Day(s)'); // wait until the balance has loaded, then enter the dates
     await apply.fillDates('2026-12-07', '2026-12-22'); // 12 working days, balance 10
     await expect(apply.leaveBalance).toContainText('Balance not sufficient');
     await apply.applyButton.click();
