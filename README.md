@@ -91,26 +91,17 @@ Findings from hands-on testing of the installed application:
 Each test title starts with the case ID, and the test reads like the case it automates:
 
 ```js
-test('TC-LEAVE-036 a supervisor approves a request', async ({ data, signIn }) => {
-  const supervisor = await data.createStaff({ leaveDays: 0 });
-  const employee = await data.createStaff({ supervisor, leaveDays: 10 });
-  const employeePage = await signIn(employee.username);
-  const comment = data.uniqueName('c');
-  await applyLeaveAs(employeePage, { leaveTypeId: await data.leaveTypeId('QA Annual Leave'), fromDate: MON, toDate: TUE, comment });
-  const supervisorPage = await signIn(supervisor.username);
-  const list = new LeaveListPage(supervisorPage);
+test('TC-LOGIN-002 valid username with wrong password is rejected', async ({ page }) => {
+  await loginPage.login(username, 'wrong-password-1');
 
-  await list.open();
-  await list.approveButton(employee.lastName).click();
-
-  await expect(supervisorPage.getByText('Successfully Updated')).toBeVisible();
-  const myLeave = new MyLeavePage(employeePage);
-  await myLeave.open();
-  await expect(myLeave.row(comment)).toContainText('Scheduled (2.00)');
+  await expect(loginPage.invalidCredentialsAlert).toBeVisible();
+  await expect(page).toHaveURL(LOGIN_URL);
 });
 ```
 
-The people and their leave days are created through the application's API and removed afterwards. The approval itself goes through the real screens.
+The test signs in with a wrong password, then checks that an error message appears and the user stays on the login page. The page object (`LoginPage`) holds the details of the screen, so the test reads like the case.
+
+Larger tests, such as the Leave approval workflow, create their people through the application's API and remove them afterwards. The behavior being tested always goes through the real screens.
 
 The end-to-end story is one test with one named step per test case, so the report shows each case on its own:
 
@@ -156,8 +147,6 @@ npx playwright test --project=end-to-end  # the end-to-end story
 npx playwright show-report
 ```
 
-If the admin password contains a `#`, put the value in quotes in `.env`.
-
 **Leave prerequisites.** The Leave tests need a one-time setup in the application: a leave period from January 1 to December 31, two leave types named `QA Annual Leave` and `QA Sick Leave`, and a holiday named `QA Holiday` on 2026-12-25. The tests use dates in December 2026. Each test creates its own employees and entitlements and removes them afterwards.
 
 ## Design decisions
@@ -169,15 +158,13 @@ If the admin password contains a `#`, put the value in quotes in `.env`.
 - **API for setup, screens for testing.** Employees, users, entitlements and leave requests used as test setup are created through the application's own web API, which is much faster than clicking through forms. The behavior being tested always goes through the real screens.
 - **Safe cleanup.** Everything a test creates is removed by exact id or exact name, never by position in a list, and cleanup still runs when a test fails. This matters because manual and automated testing share one database.
 - **Several people in one test.** A fixture opens a separate logged-in session for each person, for example an employee and a supervisor.
-- **Known defects.** A test for a confirmed bug is written with the correct expected behavior and marked as an expected failure, so the report shows it and the run starts failing as soon as the bug is fixed.
-- **Three tests at a time.** The local application runs on a laptop and slows down under heavier load, which makes the busiest tests time out.
+- **Three tests at a time.** The local application slows down under heavier load, which makes the busiest tests time out.
 
 ## Good to know
 
 - The suite runs against a local OrangeHRM installation, with the address set in `.env`.
 - The Leave tests use dates in December 2026 and rely on the one-time Leave setup described above.
 - Manual testing and automation share one database, so they are run one after the other.
-- Observation cases are revisited when a documented expected result becomes available.
 
 ## Author
 
