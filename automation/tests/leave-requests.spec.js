@@ -154,6 +154,18 @@ test.describe('Leave - requests', () => {
     await expect(myLeave.row(comment)).toContainText('Pending Approval (2.00)');
   });
 
+  test('TC-LEAVE-030 a To Date earlier than the From Date is rejected', async ({ data, signIn }) => {
+    const employee = await data.createStaff();
+    const page = await signIn(employee.username);
+    const apply = new ApplyLeavePage(page);
+
+    await apply.open();
+    await apply.chooseType('QA Annual Leave');
+    await apply.fillDates(TUE, MON); // From 2026-12-08, To 2026-12-07
+
+    await expect(apply.error('To Date')).toHaveText('To date should be after from date');
+  });
+
   test('TC-LEAVE-031 an overlapping request is refused', async ({ data, signIn }) => {
     const employee = await data.createStaff();
     const page = await signIn(employee.username);
@@ -182,6 +194,21 @@ test.describe('Leave - requests', () => {
     await expect(page.getByText('Leave Balance Exceeded')).toBeVisible();
     await myLeave.open();
     await expect(myLeave.recordsInfo).toHaveText('No Records Found'); // nothing was saved
+  });
+
+  test('TC-LEAVE-034 a request for a past date is accepted', async ({ data, signIn }) => {
+    const employee = await data.createStaff();
+    const page = await signIn(employee.username);
+    const comment = data.uniqueName('c');
+    const apply = new ApplyLeavePage(page);
+    const myLeave = new MyLeavePage(page);
+
+    await apply.open();
+    await apply.apply({ from: '2026-11-02', to: '2026-11-02', comment }); // a date before today
+
+    await expect(page.getByText('Successfully Saved')).toBeVisible();
+    await myLeave.open();
+    await expect(myLeave.row(comment)).toContainText('Pending Approval (1.00)');
   });
 
   // ---- TS-LEAVE-006: approve, reject and cancel ----

@@ -14,6 +14,10 @@ class ApplyLeavePage {
     return this.page.locator('.oxd-input-group').filter({ has: this.page.getByText(label, { exact: true }) });
   }
 
+  error(label) {
+    return this.field(label).locator('.oxd-input-field-error-message');
+  }
+
   async open() {
     await this.page.goto('leave/applyLeave');
     await this.field('Leave Type').waitFor();
