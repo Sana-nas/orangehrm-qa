@@ -35,7 +35,7 @@ Both use the same test case IDs, so any manual case can be matched to its automa
 ## What this project demonstrates
 
 - **Test design.** Scenarios and cases cover positive, negative, validation, boundary and permission situations, each with a priority (P0 to P3).
-- **Evidence-based expectations.** Every expected result names its source: on-screen text, the vendor's help portal, HR logic, or a labelled assumption. Behavior without a documented expectation stays an observation until one exists.
+- **Evidence-based expectations.** Every expected result names its source: on-screen text, the official documentation, HR logic, or a labelled assumption. Behavior without a documented expectation stays an observation until one exists.
 - **Clear defect reporting.** BUG-001 follows the standard structure and is backed by a manual reproduction, an automated reproduction and screenshots.
 - **Business-rule testing.** The Leave module is tested against real rules: weekends and holidays are not counted as leave days, a pending request already reduces the balance, overlapping or over-balance requests are refused, and nobody can approve their own leave.
 - **Role-based access.** Admin, supervisor and employee are each checked for what they can and cannot reach.
