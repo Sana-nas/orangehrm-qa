@@ -1,4 +1,4 @@
-﻿# OrangeHRM QA Portfolio
+﻿# QA Portfolio: Manual Testing and Playwright Automation
 
 ![Test cases](https://img.shields.io/badge/test%20cases-140-blue)
 ![Automated tests](https://img.shields.io/badge/automated%20tests-129%20passing-brightgreen)
