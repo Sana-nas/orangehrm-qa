@@ -5,6 +5,8 @@
 ![Defects found](https://img.shields.io/badge/defects%20found-1-red)
 ![Tooling](https://img.shields.io/badge/Playwright-JavaScript-45ba4b)
 
+Built by Sana Anas K. More of my work is at [sana-anas.vercel.app](https://sana-anas.vercel.app).
+
 **A complete QA exercise on a real HR system.** The application under test is OrangeHRM Starter 5.9, an open-source human resources product. The project covers logging in, user administration, employee records, leave management, and the everyday story of an employee asking for leave and a manager approving it.
 
 It delivers two things that work together:
